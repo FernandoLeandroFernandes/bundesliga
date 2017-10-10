@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use \Datetime;
-//use \Debugbar;
+use \Debugbar;
 
 use App\League;
 use App\Team;
@@ -39,13 +39,6 @@ class PagesController extends Controller {
 
 	private function synchronize($season) {
 
-		// ob_start();
-		// var_dump($season);
-		// Debugbar::info('$season: '.ob_get_clean());
-
-		// Debugbar::info('empty($season->sync): '.empty($season->sync));
-		// Debugbar::info('is_null($season->sync): '.is_null($season->sync));
-
 		// if there's an already synced season on record...
 		if (!is_null($season->sync)) {
 
@@ -54,15 +47,9 @@ class PagesController extends Controller {
 							  ->orderBy('timeUTC')
 							  ->first();
 	
-			// ob_start();
-			// var_dump($openMatch);
-			// Debugbar::info('$openMatch: '.ob_get_clean());
-
 			if (empty($openMatch)) return false;
 
 			$matchTime = DateTime::createFromFormat('Y-m-d G:i:s', $openMatch->timeUTC);
-
-			// Debugbar::info('$matchTime < new Datetime(): '.($matchTime < new Datetime() ? 'true' : 'false'));
 
 			if ($matchTime > new Datetime()) return false;
 
@@ -139,7 +126,6 @@ class PagesController extends Controller {
 							'name' => $matchData->LeagueName,
 							'sync' => new Datetime()
 						]);
-
 				}
 			}
 
@@ -153,17 +139,26 @@ class PagesController extends Controller {
 				}
 			}
 
+		// ob_start();
+		// var_dump($matchScore);
+		// Debugbar::info('$matchScore: '.ob_get_clean());
+
+		// ob_start();
+		// var_dump($winnerTeam);
+		// Debugbar::info('$winnerTeam: '.ob_get_clean());
+		// Debugbar::info('(!empty($winnerTeam) ? $winnerTeam : NULL): '. (!empty($winnerTeam) ? $winnerTeam : NULL));
+
 			$thisMatch = Match::updateOrCreate(
 				[ 'id' => $matchData->MatchID ],
 				[
-				'league_id'	 => $matchData->LeagueId,
-				'timeUTC'	 => (new DateTime($matchData->MatchDateTimeUTC)),
-				'finished'	 => $matchData->MatchIsFinished,
-				'team1_id'	 => $matchData->Team1->TeamId,
-				'team2_id'	 => $matchData->Team2->TeamId,
-				'scoreTeam1' => ($matchScore ? $matchScore->ScoreTeam1 : 0),
-				'scoreTeam2' => ($matchScore ? $matchScore->ScoreTeam2 : 0),
-				'winnerTeam' => $winnerTeam
+				'league_id'		 => $matchData->LeagueId,
+				'timeUTC'		 => (new DateTime($matchData->MatchDateTimeUTC)),
+				'finished'		 => $matchData->MatchIsFinished,
+				'team1_id'		 => $matchData->Team1->TeamId,
+				'team2_id'		 => $matchData->Team2->TeamId,
+				'scoreTeam1'	 => (!empty($matchScore) ? $matchScore->ScoreTeam1 : 0),
+				'scoreTeam2'	 => (!empty($matchScore) ? $matchScore->ScoreTeam2 : 0),
+				'winner_team_id' => (!empty($winnerTeam) ? $winnerTeam : NULL)
 				]
 			);
 		}
@@ -229,19 +224,20 @@ class PagesController extends Controller {
 
 		// Debugbar::info('Loading TEAMS... ');
 
-		$teams = DB::select('
-			select tm.*, count(distinct(am.id)) as all_matches, count(distinct(wm.id)) as winner_matches
-			from  teams as tm, matches as am, matches as wm
-			where ((tm.id = am.team1_id or tm.id = am.team2_id) and (am.finished = 1))
-			   AND ((tm.id = wm.winner_team_id) and (wm.finished = 1))
-			group by tm.id;');
+		$sql = 
+			'SELECT tm.*, count(DISTINCT(am.id)) AS all_matches, count(DISTINCT(wm.id)) AS winner_matches
+			FROM teams AS tm
+			LEFT OUTER JOIN matches AS am ON ((tm.id = am.team1_id OR tm.id = am.team2_id) AND (am.finished = 1))
+			LEFT OUTER JOIN matches AS wm ON ((tm.id = wm.winner_team_id) AND (wm.finished = 1))
+			WHERE (am.league_id = '.$season->id.') AND (wm.league_id = '.$season->id.')
+			GROUP BY tm.id
+			ORDER BY winner_matches DESC';
 
-		// ob_start();
-		// var_dump($teams);
-		// Debugbar::info('$teams: '.ob_get_clean());
+		Debugbar::info('$sql: '.$sql);
+
+		$teams = DB::select($sql);
 
 		// return Response::json($teams);
 		return view('pages.teamsRatios', compact('league', 'year', 'season', 'teams'));
 	}
-
 }

@@ -1,0 +1,170 @@
+
+/* Bundesliga custom styles */
+
+.ratios-table {
+
+	display:table;
+	margin: 0 auto;
+	width:100%;
+
+	.ratio-header {
+		font-size: 22px;
+		text-align: center;
+		width: 100%;
+	}
+
+	.ratio-row {
+
+  	display: inline-table;
+		margin: 5px;
+		width: 100%;
+
+		.team {
+			
+			display: table-cell;
+			font-size: 18px;
+			min-width: 40%;
+			text-align: left;
+			white-space: nowrap;
+
+			.name {
+				display: contents;
+				padding:0px;
+				text-align: left;
+				white-space:nowrap;
+			}
+
+			.shield {
+					height: 26px !important;
+					margin-left: 10px;
+					margin-right: 10px;
+					vertical-align: middle;
+					width: 26px !important;
+			}
+		}
+
+		.ratio {
+  		display: table-cell;
+			white-space:nowrap;
+			font-weight:bold;
+			font-size:20px;
+			text-align:center;
+			min-width: 20%;
+		}
+	}
+}
+
+
+.nextmatches-table {
+  
+  display: table;
+  margin: 0 auto;
+  width: 100%;
+
+	.nextmatch-header {
+	 
+	  font-size: 22px;
+	  text-align: center;
+	  width: 100%;
+	}
+
+	.nextmatch-row {
+	
+	  display: inline-table;
+	  margin: 5px;
+	  width: 100%;
+
+		.team {
+	
+		  display: table-cell;
+		  font-size: 18px;
+		  min-width: 40%;
+		  white-space: nowrap;
+		  text-align: left;
+
+			.name {
+	
+			  padding: 0px;
+			  white-space: nowrap;
+			  text-align: left;
+			  display: contents;
+			}
+
+			.shield {
+	
+			  height: 26px !important;
+			  margin-left: 10px;
+			  margin-right: 10px;
+			  vertical-align: middle;
+			  width: 26px !important;
+			}
+		}
+	}
+}
+
+
+.matches-table {
+
+	display:table;
+	margin: 0 auto;
+	width:100%;
+
+	.match-header {
+		font-size: 22px;
+		text-align: center;
+		width: 100%;		
+	}
+
+	.match-row {
+
+		display: inline-table;
+		margin: 5px;
+		width: 100%;
+
+		.team {
+
+			display: table-cell;
+			font-size: 18px;
+			min-width: 40%;
+			white-space: nowrap;
+
+			.name-cell {
+				padding:0px;
+				white-space:nowrap;
+			}
+
+			.shield-cell {
+					max-width: 26px !important;
+					max-height: 26px !important;
+					margin-left: 10px;
+					margin-right: 10px;
+					vertical-align: middle;
+			}
+
+		}
+
+		.result-cell {
+			white-space:nowrap;
+			font-weight:bold;
+			font-size:20px;
+			text-align:center;
+			min-width: 20%;
+		}
+
+		.cell-center {
+			text-align:center;
+		}
+		
+		.cell-left {
+			text-align:left;
+		}
+
+		.cell-right {
+			text-align:right;
+		}
+	}
+}
+
+.comment {
+	font-size: 16px;
+}

@@ -7,7 +7,7 @@
 			<div class="page-header">
 				<h3>Welcome to Bundesliga Matches Viewer!</h3>
 			</div>
-			<p>This is a simple interview application for showing Bundesliga games data using the JSON/XML API provided by the <a href="http://www.openligadb.de/">OpenLigaDB project</a>.</p>
+			<p class="comment">This is a simple interview application for showing the german Fußball-Bundesliga games data using the JSON/XML API provided by the <a href="http://www.openligadb.de/" target="blank">OpenLigaDB project</a>.</p>
 		</div>
 	</div>
 </div>

@@ -23,6 +23,7 @@
 				<h3>Next Matches by Team // {{ $season->name }}</h3>
 			</div>
 
+			<div class="nextmatches-table">
 			@forelse ($teams as $team)
 
 				@if (!empty($time) && $time != $team->utc)
@@ -31,14 +32,16 @@
 
 				@if (empty($time) || $time != $team->utc)
 				<div class="panel panel-default">
-					<div class="panel-heading" style="text-align: center;">
+					<div class="panel-heading nextmatch-header">
 						@datetime(new DateTime($team->utc)) (UTC)
 					</div>
 				@endif
 
-					<div class="panel-body" style="text-align: center;">
-						<img height="20px" width="20px" src="{{ $team->shield }}">&nbsp;
-						<strong>{{ $team->name }}</strong>
+					<div class="panel-body nextmatch-row">
+						<div class="team">
+							<img class="shield" src="{{ $team->shield }}">
+							<div class="name">{{ $team->name }}</div>
+						</div>
 					</div>
 
 				<?php $time = $team->utc ?>
@@ -47,6 +50,7 @@
 					<p>No matches found.</p>
 
 			@endforelse
+			</div>
 		</div>
 	</div>
 </div>

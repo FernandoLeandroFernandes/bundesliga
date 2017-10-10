@@ -22,13 +22,14 @@
 					<option @if($year == $i) selected="selected" @endif value="{{ $i }}">{{ $i }}</option>
 					@endfor
 				</select>
-				<input type="submit" name="update" value="Update">
+				<input type="submit" name="select" value="Select">
 			</form>
 
 			<div class="page-header">
 				<h3>All Matches // {{ $season->name }}</h3>
 			</div>
 
+			<div class="matches-table">
 			@forelse ($matches as $match)
 
 				@if (!empty($time) && $time != $match->timeUTC)
@@ -37,15 +38,31 @@
 
 				@if (empty($time) || $time != $match->timeUTC)
 				<div class="panel panel-default">
-					<div class="panel-heading" style="text-align: center;">
+					<div class="panel-heading match-header">
 						@datetime(new DateTime($match->timeUTC)) (UTC)
 					</div>
 				@endif
 
-					<div class="panel-body" style="text-align: center;">
-						{{ $match->team1->name }}&nbsp;<img height="20px" width="20px" src="{{ $match->team1->shield }}">
-						&nbsp;<strong>&nbsp;vs&nbsp;</strong>&nbsp;
-						<img height="20px" width="20px" src="{{ $match->team2->shield }}">&nbsp;{{ $match->team2->name }}
+					<div class="panel-body match-row">
+						<div class="team cell-right">
+							<span class="name-cell">{{ $match->team1->name }}</span>
+							<img class="shield-cell" src="{{ $match->team1->shield }}">
+						</div>
+						<div class="result-cell">
+						@if($match->finished) 
+							{{ $match->scoreTeam2 }} 
+						@else - 
+						@endif
+						&nbsp;&nbsp;vs&nbsp;&nbsp;
+						@if($match->finished) 
+							{{ $match->scoreTeam2 }} 
+						@else - 
+						@endif 
+						</div>
+						<div class="team cell-left">
+							<img class="shield-cell" height="20px" width="20px" src="{{ $match->team2->shield }}">
+							<span class="name-cell">{{ $match->team2->name }}</span>
+						</div>
 					</div>
 
 				<?php $time = $match->timeUTC ?>
@@ -54,8 +71,8 @@
 					<p>No matches found.</p>
 
 			@endforelse
+				</div>
 			</div>
-
 			{{ $matches->links() }}
 		</div>
 	</div>
