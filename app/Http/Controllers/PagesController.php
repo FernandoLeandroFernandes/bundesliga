@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use \Datetime;
-use \Debugbar;
+// use \Debugbar;
 
 use App\League;
 use App\Team;
@@ -18,8 +18,6 @@ use Illuminate\Support\Facades\DB;
 class PagesController extends Controller {
 
 	private function loadSeason($league, $year) {
-
-		// Debugbar::info('Loading SEASONS... ');
 
 		$season = League::firstOrCreate([
 			'league'=> $league,
@@ -52,21 +50,7 @@ class PagesController extends Controller {
 			$matchTime = DateTime::createFromFormat('Y-m-d G:i:s', $openMatch->timeUTC);
 
 			if ($matchTime > new Datetime()) return false;
-
-				// $url = 'https://www.openligadb.de/api/getcurrentgroup/'.$season->league;
-				// $response = \Httpful\Request::get($url)->send();
-				// $gameDay = ($response->body->GroupOrderID);
-
-				// $url = 'https://www.openligadb.de/api/getlastchangedate/'.$season->league.'/'.$season->year.'/'.$gameDay;
-				// $response = \Httpful\Request::get($url)->send();
-				// $lastChange = DateTime::createFromFormat('Y-m-d\TG:i:s.u', $response->body);
-
-				// exit if the current update is greater than the last sync
-				// if ($lastChange < $season->sync) return;
-
 		}
-
-		// Debugbar::info('Synchronizing data for league('.$season->league.') and year('.$season->year.')... ');
 
 		// synchronize data
 		$this->synchronizeTeams($season->league, $season->year);
@@ -77,10 +61,7 @@ class PagesController extends Controller {
 
 	private function synchronizeTeams($league, $year) {
 		
-		// Debugbar::info('Synchronizing TEAMS for league('.$league.') and year('.$year.')... ');
-
 		$url = 'https://www.openligadb.de/api/getavailableteams/'.$league.'/'.$year;
-		// Debugbar::info('Synchronizing TEAMS URL: ['.$url.']');
 
 		$response = \Httpful\Request::get($url)->send();
 
@@ -102,8 +83,6 @@ class PagesController extends Controller {
 
 	private function synchronizeMatches($league, $year) {
 	
-		// Debugbar::info('Synchronizing MATCHES for league('.$league.') and year('.$year.')... ');
-
 		$url = 'https://www.openligadb.de/api/getmatchdata/'.$league.'/'.$year;
 
 		$response = \Httpful\Request::get($url)->send();
@@ -139,15 +118,6 @@ class PagesController extends Controller {
 				}
 			}
 
-		// ob_start();
-		// var_dump($matchScore);
-		// Debugbar::info('$matchScore: '.ob_get_clean());
-
-		// ob_start();
-		// var_dump($winnerTeam);
-		// Debugbar::info('$winnerTeam: '.ob_get_clean());
-		// Debugbar::info('(!empty($winnerTeam) ? $winnerTeam : NULL): '. (!empty($winnerTeam) ? $winnerTeam : NULL));
-
 			$thisMatch = Match::updateOrCreate(
 				[ 'id' => $matchData->MatchID ],
 				[
@@ -179,8 +149,6 @@ class PagesController extends Controller {
 
 	public function seasonMatches(Request $request) {
 
-		// Debugbar::info('[ seasonMatches ]');
-
 		$league = $request->input('league', 'bl1');
 		$year	= $request->input('year', idate('Y'));
 		
@@ -192,9 +160,6 @@ class PagesController extends Controller {
 	}
 
 	public function nextMatches(Request $request) {
-
-
-		// Debugbar::info('[ nextMatches ]');
 
 		$league = $request->input('league', 'bl1');
 		$currentYear = idate('Y');
@@ -209,20 +174,15 @@ class PagesController extends Controller {
 			group by "teams"."id" 
 			order by "utc"');
 
-		// return Response::json(Match::get());
 		return view('pages.nextMatches', compact('league', 'year', 'season', 'teams'));
 	}
 
 	public function teamsRatios(Request $request) {
 
-		// Debugbar::info('[ teamsRatios ]');
-
 		$league = $request->input('league', 'bl1');
 		$year	= $request->input('year', idate('Y'));
 
 		$season = $this->loadSeason($league, $year);
-
-		// Debugbar::info('Loading TEAMS... ');
 
 		$sql = 
 			'SELECT tm.*, count(DISTINCT(am.id)) AS all_matches, count(DISTINCT(wm.id)) AS winner_matches
@@ -233,11 +193,8 @@ class PagesController extends Controller {
 			GROUP BY tm.id
 			ORDER BY winner_matches DESC';
 
-		Debugbar::info('$sql: '.$sql);
-
 		$teams = DB::select($sql);
 
-		// return Response::json($teams);
 		return view('pages.teamsRatios', compact('league', 'year', 'season', 'teams'));
 	}
 }
