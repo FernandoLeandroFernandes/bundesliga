@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Deploy script for Bundesliga application
+# Atuhor: Fernando Fernandes
+
 # export BUNDESLIGA_HOME=$PWD/environment;
 
 echo "Creating folders...";
@@ -12,9 +15,9 @@ chmod +x init.sh;
 bash ./init.sh;
 
 echo "Cloning Bundesliga repository from Github...";
-git clone git@github.com:FernandoLeandroFernandes/bundesliga.git environment/code/bundesliga;
+git clone git@github.com:FernandoLeandroFernandes/bundesliga.git ../code/bundesliga;
 
-cp -f ../code/Vagrantfile .
+cp -f ../code/bundesliga/Vagrantfile .
 
 bash vagrant -v;
 if [ $? -ne 0 ]; then
@@ -31,7 +34,3 @@ if [ $? -ne 0 ]; then
 fi
 
 vagrant up
-
-# chmod +x environment/code/bundesliga/fabfile.py;
-
-#python fabfile
