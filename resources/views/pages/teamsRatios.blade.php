@@ -39,7 +39,7 @@
 						<p>No matches found.</p>
 
 				@endforelse
-				<!-- </div> -->
+				</div>
 			</div>
 		</div>
 	</div>
